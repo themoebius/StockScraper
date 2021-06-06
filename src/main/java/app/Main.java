@@ -7,17 +7,17 @@ public class Main {
     public static void main (String[] args) throws IOException {
 
 
-        Stock gme = new Stock("gme");
+        Stock tsla = new Stock("tsla");
 
-        System.out.println(gme.date);
+        System.out.println(tsla.date);
 
-        System.out.println(gme.volume);
-        System.out.println(gme.sixtyDayAverageVolume);
+        System.out.println(tsla.volume);
+        System.out.println(tsla.sixtyDayAverageVolume);
 
-        System.out.println(gme.dailyHigh);
-        System.out.println(gme.dailyLow);
+        System.out.println(tsla.dailyHigh);
+        System.out.println(tsla.dailyLow);
 
-        System.out.println(gme.socialMediaMentions);
+        System.out.println(tsla.socialMediaMentions);
 
 
     }
