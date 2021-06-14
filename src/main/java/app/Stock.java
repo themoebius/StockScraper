@@ -13,9 +13,6 @@ public class Stock {
     public final LocalDate date = LocalDate.now();
     public final String socialMediaMentions;
 
-
-
-
     public Stock(String tickerName) throws IOException {
         StockScraper ticker = new StockScraper(tickerName);
 

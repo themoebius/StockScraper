@@ -12,13 +12,11 @@ public class Main {
         System.out.println(tsla.date);
 
         System.out.println(tsla.volume);
-        System.out.println(tsla.sixtyDayAverageVolume);
 
+        System.out.println(tsla.sixtyDayAverageVolume);
         System.out.println(tsla.dailyHigh);
         System.out.println(tsla.dailyLow);
-
         System.out.println(tsla.socialMediaMentions);
-
 
     }
 

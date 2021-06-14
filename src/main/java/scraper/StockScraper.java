@@ -63,12 +63,14 @@ public final class StockScraper {
 
     public StockScraper(String searchTerm) throws IOException{
         this.searchTerm = searchTerm;
-        String googleSearchString = "https://www.google.com/search?q=" + this.searchTerm + "+stock+volume&oq=" + this.searchTerm + "+stock+volume&aqs=chrome..69i57j0l5j69i65l2.4320j1j7&sourceid=chrome&ie=UTF-8";
+        String googleSearchString = "https://www.google.com/search?q=" + this.searchTerm + "+stock+volume&oq=" + this.searchTerm + "+stock+volume&sourceid=chrome&ie=UTF-8";
         this.googleSearchUrl = new URL(googleSearchString);
-        String redditSearchString = "https://api.pushshift.io/reddit/search/?q=" + this.searchTerm +"&size=500&after=2d";
+        String redditSearchStringOLD = "https://api.pushshift.io/reddit/search/submission/?q=" + this.searchTerm;
+        String redditSearchString = "https://api.pushshift.io/reddit/search/comment/?q=" + this.searchTerm +"&aggs=link_id";
+
+        String redditSearchString2 = "https://api.pushshift.io/reddit/comment/search/?subreddit=wallstreetbets,superstonk&aggs=subreddit&q=" + this.searchTerm;
         this.redditSearchUrl = new URL(redditSearchString);
     }
-
 
 
 
@@ -81,10 +83,13 @@ public final class StockScraper {
 
         String[] tickerVariations = new String[] {searchTerm.toLowerCase(), searchTerm.toUpperCase(), "$"+searchTerm.toUpperCase(), "$"+searchTerm.toUpperCase()};
 
+
+
         String line = buffReader.readLine();
         int mentions = 0;
 
         while (line != null) {
+            //System.out.println(line);
             if((line.contains(tickerVariations[0]) || line.contains(tickerVariations[1]) || line.contains(tickerVariations[2]) || line.contains(tickerVariations[3])) & !line.contains("permalink") & !line.contains("subreddit") & !line.contains("author")) {
                 mentions++;
                 System.out.println(line);
@@ -161,6 +166,7 @@ public final class StockScraper {
         }
 
         System.out.println("60 Day Average Volume for " + searchTerm + " on "+ LocalDate.now() + ": " + average + " Million");
+
         return average;
     }
 
