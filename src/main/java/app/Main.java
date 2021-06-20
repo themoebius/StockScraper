@@ -1,23 +1,25 @@
 package app;
-import java.io.IOException;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import static app.Helper.createRunConfig;
+import static readNwrite.jsonReader.readFromFile;
+import static readNwrite.jsonWriter.writeToFile;
 
 public class Main {
 
     public static void main (String[] args) throws IOException {
 
+        ArrayList<Stock> test = createRunConfig(args);
 
-        Stock tsla = new Stock("tsla");
+        writeToFile(test);
 
-        System.out.println(tsla.date);
+        ArrayList<Stock> returnTest = readFromFile(args);
 
-        System.out.println(tsla.volume);
-
-        System.out.println(tsla.sixtyDayAverageVolume);
-        System.out.println(tsla.dailyHigh);
-        System.out.println(tsla.dailyLow);
-        System.out.println(tsla.socialMediaMentions);
-
+        for(Stock stock : returnTest){
+            System.out.println(stock.tickerName);
+            System.out.println(stock.volume);
+            System.out.println(stock.socialMediaMentionsCount);
+        }
     }
-
 }

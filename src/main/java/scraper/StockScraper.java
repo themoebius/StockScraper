@@ -1,27 +1,21 @@
-// Test comment Miko
-
 package scraper;
 
-
+import com.google.common.base.CharMatcher;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.time.LocalDate;
-
-
+import java.util.ArrayList;
 
 public final class StockScraper {
 
     private final String searchTerm;
-
     private final URL googleSearchUrl;
-
     private final URL redditSearchUrl;
-
+    private ArrayList<String> redditComments;
     private final String requestProp = "\"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\"";
-
 
     public String getHigh() {
         try {
@@ -55,56 +49,57 @@ public final class StockScraper {
         }
     }
 
-    public String getMentions() {
+    public String[] getMentions() {
         try {
             return getMentionsFromReddit();
 
         } catch(IOException e) {
-            return "Could not fetch 60 day average volume";
+            System.out.println("Something went wrong while fetching the comments/n"+e);
         }
+        return null;
     }
 
     public StockScraper(String searchTerm) throws IOException{
         this.searchTerm = searchTerm;
         String googleSearchString = "https://www.google.com/search?q=" + this.searchTerm + "+stock+volume&oq=" + this.searchTerm + "+stock+volume&sourceid=chrome&ie=UTF-8";
         this.googleSearchUrl = new URL(googleSearchString);
-        String redditSearchStringOLD = "https://api.pushshift.io/reddit/search/submission/?q=" + this.searchTerm;
-        String redditSearchString = "https://api.pushshift.io/reddit/search/comment/?q=" + this.searchTerm +"&aggs=link_id";
 
-        String redditSearchString2 = "https://api.pushshift.io/reddit/comment/search/?subreddit=wallstreetbets,superstonk&aggs=subreddit&q=" + this.searchTerm;
-        this.redditSearchUrl = new URL(redditSearchString);
+        String redditComments = "https://api.pushshift.io/reddit/search/comment/?q=" + this.searchTerm + "&subreddit=investing,wallstreetbets,gme,superstonk&size=499";
+        String redditSubmissions =  "https://api.pushshift.io/reddit/search/submission/?q=" + this.searchTerm + "&subreddit=investing&size=499";
+
+
+    this.redditSearchUrl = new URL(redditComments);
     }
 
 
 
 
-    private String getMentionsFromReddit() throws IOException {
+    private String[] getMentionsFromReddit() throws IOException {
+        redditComments = new ArrayList<>();
+
         URLConnection connection = redditSearchUrl.openConnection();
-        //connection.addRequestProperty("User-Agent", requestProp);
+        connection.addRequestProperty("User-Agent", requestProp);
         InputStreamReader streamReader = new InputStreamReader(connection.getInputStream());
         BufferedReader buffReader = new BufferedReader(streamReader);
-
         String[] tickerVariations = new String[] {searchTerm.toLowerCase(), searchTerm.toUpperCase(), "$"+searchTerm.toUpperCase(), "$"+searchTerm.toUpperCase()};
 
-
-
         String line = buffReader.readLine();
-        int mentions = 0;
-
         while (line != null) {
-            //System.out.println(line);
             if((line.contains(tickerVariations[0]) || line.contains(tickerVariations[1]) || line.contains(tickerVariations[2]) || line.contains(tickerVariations[3])) & !line.contains("permalink") & !line.contains("subreddit") & !line.contains("author")) {
-                mentions++;
-                System.out.println(line);
-            }
+               String nuline = line.replace("\"body\": \"", "");
+               String cleanedLine = nuline.substring(0, nuline.length() - 2);
+               String cleanedAndCropped = cleanedLine.strip();
 
+               redditComments.add(cleanedAndCropped);
+            }
             line= buffReader.readLine();
         }
+        buffReader.close();
+        streamReader.close();
 
-        System.out.println("Mentions of " + searchTerm + " during the last 3 days until "+ LocalDate.now() + ": " + mentions + "...");
-        return String.valueOf(mentions);
+        return redditComments.toArray(String[]::new);
+        //return redditComments;
     }
-
 
     private String pullVolumeFromUrl() throws IOException {
         URLConnection connection = googleSearchUrl.openConnection();
@@ -119,34 +114,25 @@ public final class StockScraper {
             if(line.contains("Volume: ")) {
                 int targetLine = line.indexOf("Volume: ");
                 int decimalPointPosition = line.indexOf(".", targetLine);
-
                 int start = decimalPointPosition;
 
                 while(line.charAt(start) != ' ') {
                     start--;
                 }
-
                 volume = line.substring(start + 1, decimalPointPosition +3);
-
             }
-
             line= buffReader.readLine();
         }
-
-        System.out.println("Volume for " + searchTerm + " on "+ LocalDate.now() + ": " + volume + " Million");
+        buffReader.close();
+        streamReader.close();
         return volume;
     }
 
-
     private String pullAvgFromUrl() throws IOException {
-
         URLConnection connection = googleSearchUrl.openConnection();
-
         connection.addRequestProperty("User-Agent", requestProp);
-
         InputStreamReader streamReader = new InputStreamReader(connection.getInputStream());
         BufferedReader buffReader = new BufferedReader(streamReader);
-
         String average = "";
         String line = buffReader.readLine();
 
@@ -154,35 +140,25 @@ public final class StockScraper {
             if(line.contains("Day Avg: ")) {
                 int targetLine = line.indexOf("Day Avg: ");
                 int decimalPointPosition = line.indexOf(".", targetLine);
-
                 int start = decimalPointPosition;
 
                 while(line.charAt(start) != ' ') {
                     start--;
                 }
-
                 average = line.substring(start + 1, decimalPointPosition +3);
-
             }
-
             line= buffReader.readLine();
         }
-
-        System.out.println("60 Day Average Volume for " + searchTerm + " on "+ LocalDate.now() + ": " + average + " Million");
-
+        buffReader.close();
+        streamReader.close();
         return average;
     }
 
     private String pullDayLowFromUrl() throws IOException {
-
         URLConnection connection = googleSearchUrl.openConnection();
-
         connection.addRequestProperty("User-Agent", requestProp);
-
         InputStreamReader streamReader = new InputStreamReader(connection.getInputStream());
         BufferedReader buffReader = new BufferedReader(streamReader);
-
-
         String dayLow = "";
         String line = buffReader.readLine();
 
@@ -190,34 +166,26 @@ public final class StockScraper {
             if(line.contains("vs Avg. ")) {
                 int targetLine = line.indexOf("vs Avg. ");
                 int decimalPointPosition = line.indexOf("g. ", targetLine);
-
                 int start = decimalPointPosition;
 
                 while(line.charAt(start) != ' ') {
                     start--;
                 }
-
                 dayLow = line.substring(start +6, decimalPointPosition +9);
-
             }
-
             line= buffReader.readLine();
         }
-
-        System.out.println("Daily low for " + searchTerm + " on "+ LocalDate.now() + ": " + dayLow + " USD");
+        buffReader.close();
+        streamReader.close();
         return dayLow;
     }
 
 
     private String pullDayHighFromUrl() throws IOException {
-
         URLConnection connection = googleSearchUrl.openConnection();
-
         connection.addRequestProperty("User-Agent", requestProp);
-
         InputStreamReader streamReader = new InputStreamReader(connection.getInputStream());
         BufferedReader buffReader = new BufferedReader(streamReader);
-
         String dayHigh = "";
         String line = buffReader.readLine();
 
@@ -225,24 +193,17 @@ public final class StockScraper {
             if(line.contains("Day Range ")) {
                 int targetLine = line.indexOf("Day Range ");
                 int decimalPointPosition = line.indexOf(".", targetLine);
-
                 int start = decimalPointPosition;
 
                 while(line.charAt(start) != ' ') {
                     start--;
                 }
-
                 dayHigh = line.substring(start +1, decimalPointPosition +3);
-
             }
-
             line= buffReader.readLine();
         }
-
-        System.out.println("Daily high for " + searchTerm + " on "+ LocalDate.now() + ": " + dayHigh + " USD");
+        buffReader.close();
+        streamReader.close();
         return dayHigh;
     }
-
-
-
 }
