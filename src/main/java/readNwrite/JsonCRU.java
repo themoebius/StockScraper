@@ -20,8 +20,7 @@ public class JsonCRU {
 
     public static Stock createObjectFromJsonString(String jsonStr) {
         Gson gson = new Gson();
-        Stock stockFromString = gson.fromJson(jsonStr, Stock.class);
-        return stockFromString;
+        return gson.fromJson(jsonStr, Stock.class);
     }
 
     public static void writeJsonStringToFile(String singleJsonStr) {

@@ -56,8 +56,6 @@ public class Stock {
                 + socialMediaMentionsCount
                 + ", datetime="
                 + datetime
-                + ", socialMediaComments="
-                + redditComments
                 + "]";
     }
 }

@@ -11,7 +11,6 @@ public final class StockScraper {
     private final String searchTerm;
     private final URL googleSearchUrl;
     private final URL redditSearchUrl;
-    private ArrayList<String> redditComments;
     private final String requestProp = "\"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\"";
 
     public String getHigh() {
@@ -65,9 +64,8 @@ public final class StockScraper {
         this.redditSearchUrl = new URL(redditComments);
     }
 
-
     private String[] getMentionsFromReddit() throws IOException {
-        redditComments = new ArrayList<>();
+        ArrayList<String> redditComments = new ArrayList<>();
 
         URLConnection connection = redditSearchUrl.openConnection();
         connection.addRequestProperty("User-Agent", requestProp);
