@@ -1,20 +1,19 @@
 package app;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import scraper.StockScraper;
 import static java.lang.String.valueOf;
 
 public class Stock {
-    public final String tickerName;
-    public final String dailyHigh;
-    public final String dailyLow;
-    public final String volume;
-    public final String sixtyDayAverageVolume;
-    public final LocalDate date = LocalDate.now();
-    public final String socialMediaMentionsCount;
-    public final String[] redditComments;
+    public String tickerName;
+    public String dailyHigh;
+    public String dailyLow;
+    public String volume;
+    public String sixtyDayAverageVolume;
+    public LocalDateTime datetime;
+    public String socialMediaMentionsCount;
+    public String[] redditComments;
 
     public Stock(String tickerName) throws IOException {
         StockScraper ticker = new StockScraper(tickerName);
@@ -23,8 +22,42 @@ public class Stock {
         this.dailyLow = ticker.getLow();
         this.volume = ticker.getVolume();
         this.sixtyDayAverageVolume = ticker.get60DayAvg();
+        this.datetime = LocalDateTime.now();
         this.redditComments = ticker.getMentions();
-        this.socialMediaMentionsCount = valueOf(ticker.getMentions().length);
+
+        try {
+            this.socialMediaMentionsCount = valueOf(ticker.getMentions().length);
+        }
+        catch (NullPointerException e) {
+            System.out.println("could not retrieve social media data./n Setting mentions to 0");
+            if (this.socialMediaMentionsCount == null) {
+                this.socialMediaMentionsCount = "0";
+            }
+        }
     }
 
+    // creates Json-string ...not utilized but maybe good to have
+    @Override
+    public String toString()
+    {
+        return "[tickerName="
+                + tickerName
+                + ", dailyHigh="
+                + dailyHigh
+                + ", dailyLow="
+                + dailyLow
+                + ", volume="
+                + volume
+                + ", sixtyDayAverageVolume="
+                + sixtyDayAverageVolume
+                + ", redditComments="
+                + redditComments
+                + ", socialMediaMentionsCount="
+                + socialMediaMentionsCount
+                + ", datetime="
+                + datetime
+                + ", socialMediaComments="
+                + redditComments
+                + "]";
+    }
 }

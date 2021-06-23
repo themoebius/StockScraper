@@ -1,7 +1,5 @@
 package scraper;
 
-import com.google.common.base.CharMatcher;
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,7 +8,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 public final class StockScraper {
-
     private final String searchTerm;
     private final URL googleSearchUrl;
     private final URL redditSearchUrl;
@@ -52,11 +49,10 @@ public final class StockScraper {
     public String[] getMentions() {
         try {
             return getMentionsFromReddit();
-
         } catch(IOException e) {
             System.out.println("Something went wrong while fetching the comments/n"+e);
+            return null;
         }
-        return null;
     }
 
     public StockScraper(String searchTerm) throws IOException{
@@ -66,12 +62,8 @@ public final class StockScraper {
 
         String redditComments = "https://api.pushshift.io/reddit/search/comment/?q=" + this.searchTerm + "&subreddit=investing,wallstreetbets,gme,superstonk&size=499";
         String redditSubmissions =  "https://api.pushshift.io/reddit/search/submission/?q=" + this.searchTerm + "&subreddit=investing&size=499";
-
-
-    this.redditSearchUrl = new URL(redditComments);
+        this.redditSearchUrl = new URL(redditComments);
     }
-
-
 
 
     private String[] getMentionsFromReddit() throws IOException {
@@ -98,7 +90,7 @@ public final class StockScraper {
         streamReader.close();
 
         return redditComments.toArray(String[]::new);
-        //return redditComments;
+
     }
 
     private String pullVolumeFromUrl() throws IOException {
@@ -179,7 +171,6 @@ public final class StockScraper {
         streamReader.close();
         return dayLow;
     }
-
 
     private String pullDayHighFromUrl() throws IOException {
         URLConnection connection = googleSearchUrl.openConnection();
