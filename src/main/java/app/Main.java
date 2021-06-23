@@ -17,9 +17,5 @@ public class Main {
         // converting and saving &| appending generated Objects
         // to .txt files in 'generatedData'- folder
         saveAllToFile(getData);
-
-
-        //Stock testStock = createObjectFromJsonString(testString.get(1));
-
     }
 }
