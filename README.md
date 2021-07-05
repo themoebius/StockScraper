@@ -5,7 +5,7 @@ and reddit-mentions for user-defined stocks / user defined subreddits
 - setup needed- set your stocks and subreddits in the run-config:
   [stock1 stock2 stock3 stockX , subreddit1 subreddit2 subredditX]
 - head over to https://marketstack.com/ to get your (free) API-key
-  set an environment variable MARKETSTACK_KEY=your_key in the run-config
+- set an environment variable MARKETSTACK_KEY=your_key in the run-config
 - and then just run...
 
 
