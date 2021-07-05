@@ -15,7 +15,7 @@ public class JsonCRU {
     public static String createJsonStringFromObject(Stock stock) {
         Gson gson = new Gson();
         //creates String with '!' as a separator between stockName and jsonString
-        return stock.tickerName + "!" + gson.toJson(stock);
+        return stock.getTickerName() + "!" + gson.toJson(stock);
     }
 
     public static Stock createObjectFromJsonString(String jsonStr) {
