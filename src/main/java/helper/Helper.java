@@ -18,7 +18,7 @@ public class Helper {
         if (isInArray) {
             int splitCharPosition = Arrays.asList(args).indexOf(",");
             String[] subreddits = copyOfRange(args, splitCharPosition + 1, args.length);
-            String[] stocks = copyOfRange(args, 0, splitCharPosition - 1);
+            String[] stocks = copyOfRange(args, 0, splitCharPosition);
             stocksAndSubreddits.add(stocks);
             stocksAndSubreddits.add(subreddits);
             return stocksAndSubreddits;
@@ -44,6 +44,7 @@ public class Helper {
         String[] searchTerms = stocksAndSubredditsSplit.get(0);
         String[] subRedditChoice = stocksAndSubredditsSplit.get(1);
 
+        System.out.println(searchTerms.length);
         for(String tickerName : searchTerms) {
             Stock stock = new Stock(tickerName, subRedditChoice );
             generatedStocks.add(stock);
