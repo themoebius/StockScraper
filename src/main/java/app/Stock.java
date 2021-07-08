@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static helper.ConnectionStringGenerator.getMarketStackConnectionString;
-import static helper.ConnectionStringGenerator.getRedditConnectionString;
+import static helper.MarketStackConnectionStringBuilder.getConnectionString;
+import static helper.RedditConnectionStringBuilder.getConnectionString;
 import static java.lang.String.valueOf;
 import static scraper.MarketStackScraper.getStockData;
 import static scraper.RedditScraper.getRedditComments;
@@ -28,10 +27,9 @@ public class Stock {
 
     public Stock(String tickerName, String[] subRedditChoice) throws IOException {
         this.tickerName = tickerName;
-        //ConnectionStringGenerator connectionStringGenerator = new ConnectionStringGenerator(this.tickerName, subRedditChoice);
 
-        String redditString = getRedditConnectionString(tickerName, subRedditChoice);
-        String financeString = getMarketStackConnectionString(tickerName);
+        String redditString = getConnectionString(tickerName, subRedditChoice);
+        String financeString = getConnectionString(tickerName);
 
         HashMap<String, String> stockValues = getStockData(financeString);
 
