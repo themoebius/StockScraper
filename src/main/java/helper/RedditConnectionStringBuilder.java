@@ -1,6 +1,6 @@
 package helper;
 
-public class RedditConnectionStringBuilder {
+public class RedditConnectionStringBuilder extends ConnectionStringGenerator {
     private final static String leadString = "https://api.pushshift.io/reddit/search/comment/?q=";
     private final static String midString = "&subreddit=";
     private final static String endString = "&size=499";
