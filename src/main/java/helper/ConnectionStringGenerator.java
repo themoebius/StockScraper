@@ -1,12 +1,18 @@
 package helper;
 
-public class ConnectionStringGenerator {
+public abstract class ConnectionStringGenerator <String>{
 
-    public static String getRedditConnectionString(String searchTerm, String[] subSelectorChoice) {
-        return RedditConnectionStringBuilder.getConnectionString(searchTerm, subSelectorChoice);
-    }
+    String leadString;
+    String midString;
+    String endString;
 
-    public static String getMarketStackConnectionString(String searchTerm) {
-        return MarketStackConnectionStringBuilder.getConnectionString(searchTerm);
-    }
+    String getConnectionString(String searchTerm,String[] subSelectorChoice){
+        return null;
+    };
+
+    String getConnectionString(String searchTerm){
+        return null;
+    };
+
+
 }
