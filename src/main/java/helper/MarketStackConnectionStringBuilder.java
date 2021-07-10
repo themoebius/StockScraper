@@ -1,7 +1,6 @@
 package helper;
 
 public class MarketStackConnectionStringBuilder extends ConnectionStringGenerator{
-
     private final static String leadString = "http://api.marketstack.com/v1/";
     private final static String midString = "eod/latest?access_key=";
     private final static String endString = "&symbols=";

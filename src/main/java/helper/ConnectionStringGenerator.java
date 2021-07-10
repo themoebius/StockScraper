@@ -1,7 +1,6 @@
 package helper;
 
 abstract class ConnectionStringGenerator <String>{
-
     String leadString;
     String midString;
     String endString;
