@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Scanner;
 
+import static helper.ScrapeTimeTracker.isTimeToUpdate;
 import static java.util.Arrays.copyOfRange;
 import static readNwrite.JsonCRU.createJsonStringFromObject;
 import static readNwrite.JsonCRU.writeJsonStringToFile;
@@ -43,23 +44,30 @@ public class Helper {
         Calendar calendar = Calendar.getInstance();
 
         if (isInTimeWindow(calendar)) {
-            ArrayList<Stock> generatedStocks = new ArrayList<>();
-            ArrayList<String[]> stocksAndSubredditsSplit = splitStocksFromSubreddits(args);
+            if (isTimeToUpdate()) {
 
-            String[] searchTerms = stocksAndSubredditsSplit.get(0);
-            String[] subRedditChoice = stocksAndSubredditsSplit.get(1);
+                ArrayList<Stock> generatedStocks = new ArrayList<>();
+                ArrayList<String[]> stocksAndSubredditsSplit = splitStocksFromSubreddits(args);
 
-            System.out.println(searchTerms.length);
-            for (String tickerName : searchTerms) {
-                Stock stock = new Stock(tickerName, subRedditChoice);
-                generatedStocks.add(stock);
+                String[] searchTerms = stocksAndSubredditsSplit.get(0);
+                String[] subRedditChoice = stocksAndSubredditsSplit.get(1);
+
+                System.out.println(searchTerms.length);
+                for (String tickerName : searchTerms) {
+                    Stock stock = new Stock(tickerName, subRedditChoice);
+                    generatedStocks.add(stock);
+                }
+
+                saveAllToFile(generatedStocks);
+                System.out.println("All operations Complete");
+                System.out.println("Run again tomorrow after Market close.");
             }
-
-            saveAllToFile(generatedStocks);
-            System.out.println("All operations Complete");
-            System.out.println("Run again tomorrow after Market close.");
+            else {
+                System.out.println("No Operations ran. Stay excellent");
+            }
         }
-        else {
+        else
+        {
             System.out.println("No Operations ran. Stay excellent");
         }
     }
@@ -71,8 +79,8 @@ public class Helper {
             System.out.println("The US- Stock Exchanges are closed today. Do you want to run anyways ? (y/n)");
             Scanner scanner = new Scanner(System.in);
             boolean userChoice = scanner.nextLine().equalsIgnoreCase("y");
-            scanner.close();
             return userChoice;
+            //Attn: scanner does NOT get closed here, because of utilization in ScrapeTimeTracker.isTimeToUpdate()
         }
         return false;
     }
