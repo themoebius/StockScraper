@@ -55,12 +55,6 @@ public class JsonCRU {
         return gson.toJson(dateTime);
     }
 
-    public static LocalDateTime createDateObjectFromJsonString(String jsonStr) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonStr, LocalDateTime.class);
-    }
-
-
     public static LocalDateTime readDateFromFile(String filePath) throws IOException {
         final Path path = Paths.get(filePath);
         boolean saveFileExists = Files.exists(path);
