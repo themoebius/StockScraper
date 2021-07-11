@@ -9,13 +9,15 @@ import static readNwrite.JsonCRU.*;
 
 public abstract class ScrapeTimeTracker {
 
-    // get last DateTime from .txt file
+
     private static final String timeTrackingFilePath = ".\\generatedData\\ScrapeTimeTracker.txt";
 
     // compare last DateTime from file to DateTime.now()
-    public static boolean isTimeToUpdate() throws IOException {
+    public static boolean isTimeToUpdate() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime lastRunDatetime = null;
+
+        // get last DateTime from .txt file
         try {
             lastRunDatetime = readDateFromFile(timeTrackingFilePath);
         } catch (IOException e) {
