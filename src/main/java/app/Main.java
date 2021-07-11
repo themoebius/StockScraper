@@ -5,9 +5,13 @@ import static helper.Helper.run;
 
 public class Main {
 
-    public static void main (String[] args) throws IOException {
+    public static void main (String[] args) {
 
-        run(args);
-
+        try {
+            run(args);
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 }
