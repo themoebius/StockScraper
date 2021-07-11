@@ -10,7 +10,6 @@ abstract class ConnectionStringGenerator <String>{
     }
 
     public String getConnectionString(String searchTerm){
-
         return null;
     }
 }
