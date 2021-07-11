@@ -15,6 +15,10 @@ import static readNwrite.JsonCRU.writeJsonStringToFile;
 
 public class Helper {
 
+    static final String runArgsError = "Something went wrong here- please make sure that your run-config /n follows the correct pattern:/n" +
+            "'ticker1 ticker2 tickerX , subreddit1 subreddit2 subredditX'";
+
+
     public static ArrayList<String[]> splitStocksFromSubreddits(String[] args) {
         ArrayList<String[]> stocksAndSubreddits = new ArrayList<>();
         boolean isInArray = Arrays.asList(args).contains(",");
@@ -28,7 +32,7 @@ public class Helper {
             return stocksAndSubreddits;
         }
         else {
-            System.out.println("NANANA");
+            System.out.println();
             return null;
         }
     }
@@ -40,7 +44,7 @@ public class Helper {
         }
     }
 
-    public static void run(String[] args) throws IOException {
+    public static void run(String[] args) throws IOException{
         Calendar calendar = Calendar.getInstance();
 
         if (isInTimeWindow(calendar)) {
@@ -49,18 +53,22 @@ public class Helper {
                 ArrayList<Stock> generatedStocks = new ArrayList<>();
                 ArrayList<String[]> stocksAndSubredditsSplit = splitStocksFromSubreddits(args);
 
-                String[] searchTerms = stocksAndSubredditsSplit.get(0);
-                String[] subRedditChoice = stocksAndSubredditsSplit.get(1);
+                try {
+                    String[] searchTerms = stocksAndSubredditsSplit.get(0);
+                    String[] subRedditChoice = stocksAndSubredditsSplit.get(1);
 
-                System.out.println(searchTerms.length);
-                for (String tickerName : searchTerms) {
-                    Stock stock = new Stock(tickerName, subRedditChoice);
-                    generatedStocks.add(stock);
+                    for (String tickerName : searchTerms) {
+                        Stock stock = new Stock(tickerName, subRedditChoice);
+                        generatedStocks.add(stock);
+                    }
+
+                    saveAllToFile(generatedStocks);
+                    System.out.println("All operations Complete");
+                    System.out.println("Run again tomorrow after Market close.");
                 }
-
-                saveAllToFile(generatedStocks);
-                System.out.println("All operations Complete");
-                System.out.println("Run again tomorrow after Market close.");
+                catch(NullPointerException e) {
+                    System.out.println(runArgsError);
+                }
             }
             else {
                 System.out.println("No Operations ran. Stay excellent");
@@ -78,8 +86,8 @@ public class Helper {
         if(!isBusinessDay){
             System.out.println("The US- Stock Exchanges are closed today. Do you want to run anyways ? (y/n)");
             Scanner scanner = new Scanner(System.in);
-            boolean userChoice = scanner.nextLine().equalsIgnoreCase("y");
-            return userChoice;
+            return scanner.nextLine().equalsIgnoreCase("y");
+
             //Attn: scanner does NOT get closed here, because of utilization in ScrapeTimeTracker.isTimeToUpdate()
         }
         return false;
